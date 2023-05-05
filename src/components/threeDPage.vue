@@ -13,7 +13,7 @@
     </div>
     <div class="info" id="info">
       <p class="title-top">
-        <span>HEX：</span>
+        <span>HEXHAHAAH：</span>
         <span id="name" class="c"></span>
       </p>
       <p>
