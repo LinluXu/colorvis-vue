@@ -44,11 +44,11 @@
       </p>
       <div class="other-box">
         <p>
-          <span>近似色名</span>
+          <span>近似色名：</span>
           <span id="otherInfo" class="c"></span>
         </p>
         <p style="margin-left: 40px">
-          <span>距离</span>
+          <span>距离：</span>
           <span id="otherInfo2" class="c"></span>
         </p>
       </div>
