@@ -48,7 +48,7 @@
           <span id="otherInfo" class="c"></span>
         </p>
         <p style="margin-left: 40px">
-          <span>距离：</span>
+          <span>距离aaaa：</span>
           <span id="otherInfo2" class="c"></span>
         </p>
       </div>
