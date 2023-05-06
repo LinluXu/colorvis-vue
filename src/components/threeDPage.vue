@@ -48,17 +48,17 @@
           <span id="otherInfo" class="c"></span>
         </p>
         <p style="margin-left: 40px">
-          <span>距离aaaa：</span>
+          <span>距离：</span>
           <span id="otherInfo2" class="c"></span>
         </p>
       </div>
     </div>
     <el-drawer :visible.sync="drawer" direction="rtl" custom-class="threeD" :modal="false">
-      <el-input clearable v-model="colorValue" placeholder="请输入lab颜色" size="small" @change="changeColor"> </el-input>
+      <el-input clearable v-model="colorValue" placeholder="请输入想查找的CIELab颜色值" size="small" @change="changeColor"> </el-input>
       <!-- 一级颜色 -->
       <el-select
         v-model="firstColorValue"
-        placeholder="请选择一级颜色"
+        placeholder="请选择一级色名类别"
         size="small"
         multiple
         collapse-tags
@@ -71,7 +71,7 @@
       <!-- 二级颜色 -->
       <el-select
         v-model="secondColorValue"
-        placeholder="请选择二级颜色"
+        placeholder="请选择二级色名类别"
         size="small"
         multiple
         collapse-tags
@@ -84,7 +84,7 @@
       <!-- 三级颜色 -->
       <el-select
         v-model="thirdColorValue"
-        placeholder="请选择三级颜色"
+        placeholder="请选择或输入三级色名"
         size="small"
         multiple
         filterable
@@ -100,7 +100,7 @@
       </el-select>
       <!-- 是否以线框展示 -->
       <div class="switch">
-        <span style="color: #000; margin-left: 10px">是否以线框展示:</span>
+        <span style="color: #000; margin-left: 10px">以线框展示:</span>
         <el-switch
           v-model="status"
           active-color="#13ce66"
@@ -506,7 +506,7 @@ export default {
         if (flag) return;
         this.$message({
           showClose: true,
-          message: '请输入正确的lab颜色格式,格式为 0,0,0',
+          message: '请使用英文输入法输入正确Lab颜色格式,格式为 0,0,0',
           type: 'error',
         });
       }

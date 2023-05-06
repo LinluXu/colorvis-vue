@@ -18,7 +18,7 @@
           <el-tooltip
             class="item"
             effect="dark"
-            content="此页色值取自收录的原始数据中，同名异色值的质心为值。如需全部原始数据请联系我们"
+            content="此页每个色名仅取一个值，选用同名异色值的质心为值（仅从所收录的数据计算）。"
             placement="left"
           >
             <i class="el-icon-warning-outline select-icon"></i>
@@ -51,7 +51,7 @@
           </div>
         </div>
       </div>
-      <!-- 二级五色调 -->
+      <!-- 二级10色调 -->
       <div class="second-color">
         <div class="title">
           <span>正色</span>

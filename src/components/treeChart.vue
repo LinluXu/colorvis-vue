@@ -19,7 +19,7 @@
     <el-drawer :visible.sync="drawer" direction="rtl" custom-class="treeD" :modal="false">
       <div class="switch">
         <span>颜色名称：</span>
-        <el-select v-model="colorName" placeholder="请选择" size="small" collapse-tags filterable clearable @change="queryData">
+        <el-select v-model="colorName" placeholder="请选择或搜索" size="small" collapse-tags filterable clearable @change="queryData">
           <el-option v-for="(item, index) in thirdLevelList" :key="index" :label="item.color" :value="item.color"> </el-option>
         </el-select>
       </div>
