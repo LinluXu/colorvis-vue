@@ -136,7 +136,7 @@ export default {
   props: {
     backGroudColor: {
       type: String,
-      default: '#010101',
+      default: '#808080',
     },
   },
   data() {
@@ -261,6 +261,7 @@ export default {
       convexSphere.position.copy(position);
       return convexSphere;
     },
+
     // 创建几何体
     creatGeometry(points) {
       // 创建凹凸几何体
@@ -369,6 +370,7 @@ export default {
         ...point2,
       };
     },
+
     otherColorChange(val, flag = false) {
       if (!flag) {
         if (this.group.children.length > 0) this.group.clear();
@@ -406,6 +408,16 @@ export default {
       });
       scene.add(this.group);
     },
+    // 创建球体
+    creatOtherSphere(position, color) {
+      const convexSphereGeo = new THREE.ConeGeometry(0.01, 0.01, 32);
+      const convexSphereMat = new THREE.MeshBasicMaterial({
+        color: color,
+      });
+      const convexSphere = new THREE.Mesh(convexSphereGeo, convexSphereMat);
+      convexSphere.position.copy(position);
+      return convexSphere;
+    },
     changeColor(val, flag = false) {
       let reg = /^(100|\d{1,2}),(0|-?(12[0-8]|1[01][0-9]|[1-9][0-9]?)),(0|-?(12[0-8]|1[01][0-9]|[1-9][0-9]?))$/;
       if (!flag) {
@@ -423,7 +435,7 @@ export default {
         const x = map(arr[2], -128, 127, 0, 1, true); // b
         let position = new THREE.Vector3(x, y, z);
         // 存入每个点坐标位置
-        let convexSphere = this.creatSphere(position, c);
+        let convexSphere = this.creatOtherSphere(position, c);
         let disteanceArr = [];
         this.allData.forEach((item) => {
           let value = this.distanceFn(
@@ -455,7 +467,7 @@ export default {
         const x = map(arr[2], -128, 127, 0, 1, true); // b
         let position = new THREE.Vector3(x, y, z);
         // 存入每个点坐标位置
-        let convexSphere = this.creatSphere(position, c);
+        let convexSphere = this.creatOtherSphere(position, c);
         let disteanceArr = [];
         this.allData.forEach((item) => {
           let value = this.distanceFn(
@@ -540,7 +552,7 @@ export default {
       op = Array.from(new Set(op));
       return op;
     },
-    textLoader(text, position, translateType, fontColor = 0x808080, fontSize = 0.03) {
+    textLoader(text, position, translateType, fontColor = 0xbebebe, fontSize = 0.02) {
       let that = this;
       // text文本、positon（x,y,z）坐标
       this.loader.load(
@@ -577,11 +589,12 @@ export default {
       const raycaster = new THREE.Raycaster();
       canvas = document.getElementById('webgl');
       scene = new THREE.Scene();
+      scene.background = new THREE.Color('#808080');
       const geometry = new THREE.BoxGeometry(1, 1, 1);
       const geo = new THREE.EdgesGeometry(geometry);
       const mat = new THREE.LineBasicMaterial({
         color: 0xffffff,
-        linewidth: 2,
+        linewidth: 1,
       });
       const mesh = new THREE.LineSegments(geo, mat);
       mesh.position.set(0.5, 0.5, 0.5);
@@ -591,7 +604,7 @@ export default {
       this.textGroup = new THREE.Group();
       let coordinate = ['L*', 'a*', 'b*'];
       coordinate.forEach((item) => {
-        this.textLoader(item, '', item == 'L*' ? 'y' : item == 'a*' ? 'z' : 'x', 0x808080, 0.06);
+        this.textLoader(item, '', item == 'L*' ? 'y' : item == 'a*' ? 'z' : 'x', 0xc4c4c4, 0.03);
       });
       // 增加x、y、z刻度
       let l = ['-128', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100'];
@@ -712,7 +725,7 @@ export default {
   },
   watch: {
     backGroudColor: function (val) {
-      scene.background = new THREE.Color(val ? val : '#010101');
+      scene.background = new THREE.Color(val ? val : '#808080');
     },
   },
 };

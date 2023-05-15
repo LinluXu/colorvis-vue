@@ -39,8 +39,8 @@
         <span>环形树图：</span>
         <el-switch
           v-model="status"
-          active-color="#13ce66"
-          inactive-color="#ff4949"
+          active-color="#010101"
+          inactive-color="#D9D9D9"
           :active-text="status ? '是' : '否'"
           @change="statusChange"
         ></el-switch>
@@ -77,7 +77,7 @@ export default {
       symbolSize: 2,
       fontSize: 10,
       otherFontSize: 5,
-      lineColor: '#7d7d7d',
+      lineColor: '#bebebe',
       fontColor: '#fff',
       eColor: '#42cccc',
       currentDataIndexs: [], // 高亮节点index
@@ -101,7 +101,7 @@ export default {
             left: '2%',
             right: '2%',
             lineStyle: {
-              color: '#7d7d7d',
+              color: '#bebebe',
             },
             layout: 'radial', // 设置为 radial 布局方式
             symbol: 'emptyCircle',

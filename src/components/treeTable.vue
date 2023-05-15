@@ -268,7 +268,7 @@ export default {
           line-height: 26px;
           margin: 0 5px;
           border-radius: 8px;
-          border: 1px solid rgb(127, 127, 127);
+          border: 1px solid #bebebe;
           color: #ddd;
           font-size: 13px;
           cursor: pointer;
@@ -283,7 +283,18 @@ export default {
         margin: 20px 10px 10px 0;
         align-items: center;
         .el-input__inner {
+          border-color: none;
           border-radius: 8px;
+        }
+        .el-select .el-input__inner:focus {
+          border-color: #bebebe;
+        }
+        .el-select .el-input.is-foucus .el-input__inner {
+          border-color: #bebebe;
+        }
+        .el-select-dropdown__item.selected {
+          color: #000000;
+          font-weight: 700;
         }
         .select-icon {
           font-size: 18px;
@@ -444,7 +455,7 @@ export default {
     width: 100%;
     height: 100%;
     border-radius: 6px;
-    background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色 */
+    background-color: rgba(0, 0, 0, 0.4); /* 半透明黑色 */
     cursor: not-allowed;
   }
 }

@@ -38,13 +38,13 @@ export default {
   data() {
     return {
       activeName: 'first',
-      backGroudColor: '#010101',
+      backGroudColor: '#808080',
     };
   },
   watch: {
     backGroudColor: function (val) {
       this.$nextTick(() => {
-        document.querySelector('.el-tabs__content').style.background = val ? val : '#010101';
+        document.querySelector('.el-tabs__content').style.background = val ? val : '#808080';
       });
     },
   },
@@ -114,7 +114,7 @@ export default {
 .el-tabs__content {
   height: calc(100vh - 50px) !important;
   overflow: auto !important;
-  background: rgb(1, 1, 1);
+  background: #808080;
   &::-webkit-scrollbar {
     width: 0px;
   }
