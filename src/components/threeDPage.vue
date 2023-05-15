@@ -104,7 +104,7 @@
         <el-switch
           v-model="status"
           active-color="#13ce66"
-          inactive-color="#ff4949"
+          inactive-color="#D9D9D9"
           :active-text="status ? '是' : '否'"
           @change="statusChange"
         ></el-switch>
@@ -439,7 +439,7 @@ export default {
         disteanceArr.sort((a, b) => a.distance - b.distance);
         this.approximationArr = disteanceArr.slice(0, 3); // 截取前三个
         convexSphere.otherInfo = this.approximationArr;
-        convexSphere.name = '未知';
+        convexSphere.name = '输入值';
         this.group.add(convexSphere);
         scene.add(this.group);
         return;
@@ -472,7 +472,7 @@ export default {
         disteanceArr.sort((a, b) => a.distance - b.distance);
         this.approximationArr = disteanceArr.slice(0, 3); // 截取前三个
         convexSphere.otherInfo = this.approximationArr;
-        convexSphere.name = '未知';
+        convexSphere.name = '输入值';
         this.group.add(convexSphere);
         scene.add(this.group);
         let str = '';
@@ -614,9 +614,9 @@ export default {
       };
       // 创建相机
       camera = new THREE.PerspectiveCamera(45, size.width / size.height);
-      camera.position.z = 2;
-      camera.position.x = 2;
-      camera.position.y = 2;
+      camera.position.z = 1.5;
+      camera.position.x = 1.5;
+      camera.position.y = 1.5;
       scene.add(camera);
       const renderer = new THREE.WebGLRenderer({
         canvas: canvas,
