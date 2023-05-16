@@ -4,7 +4,7 @@
  * @Author: yichuanhao
  * @Date: 2023-04-23 11:49:04
  * @LastEditors: yichuanhao 1274816963@qq.com
- * @LastEditTime: 2023-05-04 21:31:15
+ * @LastEditTime: 2023-05-16 22:09:56
 -->
 <template>
   <div class="threeDPage">
@@ -54,6 +54,11 @@
       </div>
     </div>
     <el-drawer :visible.sync="drawer" direction="rtl" custom-class="threeD" :modal="false">
+      <!-- 模式 -->
+      <el-select v-model="functionType" placeholder="请选择一级色名类别" size="small" @change="functionTypeChange">
+        <el-option label="Trimesh方法" :value="1">Trimesh方法</el-option>
+        <el-option label="Alpha Shape方法" :value="2">Alpha Shape方法</el-option>
+      </el-select>
       <el-input clearable v-model="colorValue" placeholder="请输入想查找的CIELab颜色值" size="small" @change="changeColor"> </el-input>
       <!-- 一级颜色 -->
       <el-select
@@ -141,6 +146,7 @@ export default {
   },
   data() {
     return {
+      functionType: 1,
       drawer: false,
       firstLevelList: [], // 第一层级列表
       secondLevelList: [], // 第二层级列表
@@ -159,9 +165,14 @@ export default {
       thirdLevel: [],
       otherColor: [],
       approximationArr: [],
+      thirdLevelPoint_alphashape: [],
     };
   },
   methods: {
+    // 模式切换
+    functionTypeChange(val) {
+      this.thirdLevelChange(this.thirdColorValue);
+    },
     // 一层级切换
     firstLevelChange(val, flag = false) {
       if (!flag) {
@@ -230,7 +241,10 @@ export default {
         this.otherColorChange(this.otherColor, true);
       }
       val.forEach((item) => {
-        let colorsData = this.thirdLevel.filter((d) => d.parent === item);
+        let colorsData =
+          this.functionType == 1
+            ? this.thirdLevel.filter((d) => d.parent === item)
+            : this.thirdLevelPoint_alphashape.filter((d) => d.parent === item);
         let points = [];
         colorsData.forEach((d, i) => {
           const c = colord({ l: d.l, a: d.a, b: d.b }).toHex();
@@ -320,16 +334,6 @@ export default {
         });
         return new THREE.Mesh(convexGeo, testM);
       }
-    },
-    // 处理数据给下拉框
-    formatData(data) {
-      let op = [];
-      data.forEach((d) => {
-        let name = d.parent.replace(/\r\n/, '');
-        if (name) op.push(name);
-      });
-      op = Array.from(new Set(op));
-      return op;
     },
     colorToRgb(sColor) {
       sColor = sColor.toLowerCase();
@@ -534,6 +538,9 @@ export default {
             this.secondLevel = results.data;
           } else if (key == 'thirdLevelList') {
             this.thirdLevel = results.data;
+          } else if (key == 'thirdLevelPoint_alphashape') {
+            this.thirdLevelPoint_alphashape = results.data;
+            return;
           } else {
             this.allData = results.data;
             return;
@@ -546,7 +553,7 @@ export default {
     formatData(data) {
       let op = [];
       data.forEach((d) => {
-        let name = d.parent.replace(/\r\n/, '');
+        let name = d.parent;
         if (name) op.push(name);
       });
       op = Array.from(new Set(op));
@@ -719,6 +726,7 @@ export default {
     this.parseCsvData('/assets/color/secondLevel.csv', 'secondLevelList');
     this.parseCsvData('/assets/color/thirdLevel.csv', 'thirdLevelList');
     this.parseCsvData('/assets/color/allData.csv', 'allData');
+    this.parseCsvData('/assets/color/thirdLevelPoint_alphashape.csv', 'thirdLevelPoint_alphashape');
   },
   mounted() {
     this.initThreeD();
