@@ -52,6 +52,17 @@ export default {
 </script>
 
 <style lang="scss">
+.question_icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: #000;
+  font-size: 18px;
+  cursor: pointer;
+}
+.question_icon:hover {
+  color: #bebebe;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

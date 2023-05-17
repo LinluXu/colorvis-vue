@@ -101,16 +101,27 @@
         </div>
       </div>
     </div>
+    <!-- 帮助 -->
+    <div class="fixeds"><i class="el-icon-question" @click="$refs.dialog.showDialog = true"></i></div>
+    <commonDialog dialogTitle="使用帮助" dialogWidth="600px" :isShowFooterBtn="false" :modal="true" ref="dialog">
+      <p>
+        ·切换格式：可选择不同颜色格式展示，切换后，鼠标悬浮在三级色名上展示相应内容。<br />
+        <br />
+        ·交互操作：可全选/清除。或先选择一级类别，从属于一级的二级类别将点亮，选择（可多选）后展示相应的三级色名及其颜色。
+      </p>
+    </commonDialog>
   </div>
 </template>
 
 <script>
 import Papa from 'papaparse';
 import { colord, extend } from 'colord';
+import commonDialog from './commonDialog.vue';
 import labPlugin from 'colord/plugins/lab';
 extend([labPlugin]);
 export default {
   name: 'treeTable', // 色名列表
+  components: { commonDialog },
   data() {
     return {
       colorM: 1,
@@ -247,6 +258,16 @@ export default {
 </script>
 
 <style lang="scss">
+.fixeds {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  i {
+    font-size: 24px;
+    color: #ffffff;
+    cursor: pointer;
+  }
+}
 .tree_container {
   width: 100%;
   height: calc(100vh - 50px);

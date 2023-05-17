@@ -53,14 +53,36 @@
         </p>
       </div>
     </div>
+    <commonDialog dialogTitle="使用帮助 " dialogWidth="600px" :isShowFooterBtn="false" :modal="true" ref="dialog">
+      <p>
+        ·计算方法：trimesh选取最外围顶点绘制几何体，优点是可以最大范围涵盖点，但易受离散值影响；推荐三级展示使用。alphashape绘制的几何体考虑了离散值，但对于某些点分布不均、数量较少的色名影响较大；推荐二级展示使用。<br />
+        <br />
+        ·搜索颜色：输入Lab值进行查找，画面中将展示输入值的点，并自动展示与输入值接近的色名，可以在“近似色名查看”框内选择或清除颜色。<br />
+        <br />
+        ·一级色名：以点来展示五大色调倾向 <br />
+        <br />
+        ·二级色名：展示了正色“青｜赤｜黄｜白｜黑”与间色“绿｜碧｜红｜紫｜流黄”的色域范围。<br />
+        <br />
+        ·三级色名：展示了可以确定色域的色名 <br />
+        <br />
+        ·近似色名查看：可在此搜索展示三级的所有色名（包括无法形成几何体的色名，以点展示）<br />
+        <br />
+        ·线框展示：开启后可以线框形式展示，便于比较。
+      </p>
+    </commonDialog>
     <el-drawer :visible.sync="drawer" direction="rtl" custom-class="threeD" :modal="false">
+      <!-- 帮助 -->
+      <div style="width: 220px; margin: 0 auto"><i class="el-icon-question question_icon" @click="$refs.dialog.showDialog = true"></i></div>
       <!-- 模式 -->
+      <span style="display: inline-block; width: 220px; color: #000; font-size: 14px; margin: 10px auto 0px; text-align: left">计算方法：</span>
       <el-select v-model="functionType" placeholder="请选择一级色名类别" size="small" @change="functionTypeChange">
         <el-option label="Trimesh方法" :value="1">Trimesh方法</el-option>
         <el-option label="Alpha Shape方法" :value="2">Alpha Shape方法</el-option>
       </el-select>
+      <span style="display: inline-block; width: 220px; color: #000; font-size: 14px; margin: 10px auto 0px; text-align: left">搜索颜色：</span>
       <el-input clearable v-model="colorValue" placeholder="请输入想查找的CIELab颜色值" size="small" @change="changeColor"> </el-input>
       <!-- 一级颜色 -->
+      <span style="display: inline-block; width: 220px; color: #000; font-size: 14px; margin: 10px auto 0px; text-align: left">一级色名类别：</span>
       <el-select
         v-model="firstColorValue"
         placeholder="请选择一级色名类别"
@@ -74,6 +96,7 @@
         <el-option v-for="(item, index) in firstLevelList" :key="index" :label="item" :value="item"> </el-option>
       </el-select>
       <!-- 二级颜色 -->
+      <span style="display: inline-block; width: 220px; color: #000; font-size: 14px; margin: 10px auto 0px; text-align: left">二级色名类别：</span>
       <el-select
         v-model="secondColorValue"
         placeholder="请选择二级色名类别"
@@ -87,6 +110,7 @@
         <el-option v-for="(item, index) in secondLevelList" :key="index" :label="item" :value="item"> </el-option>
       </el-select>
       <!-- 三级颜色 -->
+      <span style="display: inline-block; width: 220px; color: #000; font-size: 14px; margin: 10px auto 0px; text-align: left">三级色名类别：</span>
       <el-select
         v-model="thirdColorValue"
         placeholder="请选择或输入三级色名"
@@ -100,12 +124,13 @@
         <el-option v-for="(item, index) in thirdLevelList" :key="index" :label="item" :value="item"> </el-option>
       </el-select>
       <!-- 其他颜色 -->
+      <span style="display: inline-block; width: 220px; color: #000; font-size: 14px; margin: 10px auto 0px; text-align: left">近似色名查看：</span>
       <el-select v-model="otherColor" placeholder="相似色名" size="small" multiple filterable clearable @change="otherColorChange" value-key="color">
         <el-option v-for="(item, index) in allData" :key="index" :label="item.color" :value="item"> </el-option>
       </el-select>
       <!-- 是否以线框展示 -->
       <div class="switch">
-        <span style="color: #000; margin-left: 10px">以线框展示:</span>
+        <span style="color: #000; margin: 10px; width: 220px; font-size: 14px; auto 0px; text-align: left">以线框展示:</span>
         <el-switch
           v-model="status"
           active-color="#13ce66"
@@ -128,6 +153,7 @@ import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import commonDialog from './commonDialog.vue';
 import { map } from '../utils/utils.js';
 import labPlugin from 'colord/plugins/lab';
 import Papa from 'papaparse';
@@ -143,6 +169,9 @@ export default {
       type: String,
       default: '#808080',
     },
+  },
+  components: {
+    commonDialog,
   },
   data() {
     return {
@@ -166,6 +195,7 @@ export default {
       otherColor: [],
       approximationArr: [],
       thirdLevelPoint_alphashape: [],
+      secondLevel_alphashape: [],
     };
   },
   methods: {
@@ -211,7 +241,8 @@ export default {
         this.otherColorChange(this.otherColor, true);
       }
       val.forEach((item) => {
-        let colorsData = this.secondLevel.filter((d) => d.parent === item);
+        let colorsData =
+          this.functionType == 1 ? this.secondLevel.filter((d) => d.parent === item) : this.secondLevel_alphashape.filter((d) => d.parent === item);
         let points = [];
         colorsData.forEach((d, i) => {
           const c = colord({ l: d.l, a: d.a, b: d.b }).toHex();
@@ -541,6 +572,9 @@ export default {
           } else if (key == 'thirdLevelPoint_alphashape') {
             this.thirdLevelPoint_alphashape = results.data;
             return;
+          } else if (key == 'secondLevel_alphashape') {
+            this.secondLevel_alphashape = results.data;
+            return;
           } else {
             this.allData = results.data;
             return;
@@ -727,6 +761,7 @@ export default {
     this.parseCsvData('/assets/color/thirdLevel.csv', 'thirdLevelList');
     this.parseCsvData('/assets/color/allData.csv', 'allData');
     this.parseCsvData('/assets/color/thirdLevelPoint_alphashape.csv', 'thirdLevelPoint_alphashape');
+    this.parseCsvData('/assets/color/secondLevel_alphashape.csv', 'secondLevel_alphashape');
   },
   mounted() {
     this.initThreeD();
@@ -742,6 +777,7 @@ export default {
 <style lang="scss">
 .threeDPage {
   color: #fff;
+
   .webgl {
     width: 100%;
     height: 100%;
@@ -761,6 +797,7 @@ export default {
     display: flex;
     flex-direction: column;
   }
+
   .fixed {
     position: absolute;
     right: 12px;
@@ -803,7 +840,7 @@ export default {
   width: 240px !important;
   .el-input {
     width: 220px !important;
-    margin-top: 15px;
+    // margin-top: 15px;
   }
   .switch {
     text-align: left;

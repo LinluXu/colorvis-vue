@@ -17,6 +17,8 @@
       <i class="el-icon-s-operation"></i>
     </div>
     <el-drawer :visible.sync="drawer" direction="rtl" custom-class="treeD" :modal="false">
+      <!-- 帮助 -->
+      <div style="width: 220px; margin: 0 auto"><i class="el-icon-question question_icon" @click="$refs.dialog.showDialog = true"></i></div>
       <div class="switch">
         <span>颜色名称：</span>
         <el-select v-model="colorName" placeholder="请选择或搜索" size="small" collapse-tags filterable clearable @change="queryData">
@@ -58,6 +60,20 @@
         <el-color-picker v-model="fontColor"></el-color-picker>
       </div>
     </el-drawer>
+    <commonDialog dialogTitle="使用帮助" dialogWidth="600px" :isShowFooterBtn="false" :modal="true" ref="dialog">
+      <p>
+        ·图例(左上方)：<br />用于解释色名的层级关系。一二级为交叉关系，二三级为从属关系。<br />
+        <br />
+        ·树图（视觉中心）：<br />以树图形式展示了色名的层级关系。其中二级类别中重复色名为同一类别，<br />二级一共只有正色“青｜赤｜黄｜白｜黑”与<br />间色“绿｜碧｜红｜紫｜流黄”共10个类别。
+        <br />
+        <br />交互操作：<br />一级类别节点点击可收起，再次点击展开。<br />二级类别节点点击可跳转到新的子页面，展示该类别下的所有三级色名<br />（由于显示限制，默认展示可以几何体形式可视化的三级色名）
+        <br />点击三级色名，高亮展示该色名的从属关系。
+        <br />
+        <br />·颜色名称：<br />可搜索或选择色名，结果将高亮显示。
+        <br />
+        <br />·环形树图：<br />默认展示环形树图，可切换展示为一般树图。
+      </p>
+    </commonDialog>
   </div>
 </template>
 
@@ -65,10 +81,12 @@
 import * as echarts from 'echarts';
 import { colord, extend } from 'colord';
 import labPlugin from 'colord/plugins/lab';
+import commonDialog from './commonDialog.vue';
 import Papa from 'papaparse';
 extend([labPlugin]);
 export default {
   name: 'threeDPage', // 层级树
+  components: { commonDialog },
   data() {
     return {
       isShowOtherTree: false,
