@@ -87,6 +87,6 @@ export default {
 
 <style>
 .el-dialog__wrapper {
-  z-index: 100001;
+  z-index: 100001 !important;
 }
 </style>
