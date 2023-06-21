@@ -157,6 +157,7 @@ import commonDialog from './commonDialog.vue';
 import { map } from '../utils/utils.js';
 import labPlugin from 'colord/plugins/lab';
 import Papa from 'papaparse';
+import alphaShape from 'alpha-shape';
 extend([labPlugin]);
 let scene = null;
 let canvas = null;
@@ -277,6 +278,7 @@ export default {
             ? this.thirdLevel.filter((d) => d.parent === item)
             : this.thirdLevelPoint_alphashape.filter((d) => d.parent === item);
         let points = [];
+        let otherPoints = [];
         colorsData.forEach((d, i) => {
           const c = colord({ l: d.l, a: d.a, b: d.b }).toHex();
           const y = map(d.l, 0, 100, 0, 1, true);
@@ -285,13 +287,14 @@ export default {
           let position = new THREE.Vector3(x, y, z);
           // 存入每个点坐标位置
           points.push(position);
+          otherPoints.push([x, y, z]);
           // 创建球体材质
           let convexSphere = this.creatSphere(position, c);
           convexSphere.name = d.color;
           convexSphere.from = d.from;
           this.group.add(convexSphere);
         });
-        let convexGeoMesh = this.creatGeometry(points);
+        let convexGeoMesh = this.functionType == 1 ? this.creatGeometry(points) : this.createAlphaShape(otherPoints);
         this.group.add(convexGeoMesh);
       });
       scene.add(this.group);
@@ -365,6 +368,38 @@ export default {
         });
         return new THREE.Mesh(convexGeo, testM);
       }
+    },
+    // 创建alphaShape
+    createAlphaShape() {
+      const points = [
+        [0, 0, 0],
+        [0, 0, 1],
+        [0, 1, 0],
+        [0, 1, 1],
+        [1, 0, 0],
+        [1, 0, 1],
+        [1, 1, 0],
+        [1, 1, 1],
+      ];
+      const triangles = alphaShape(0.1, points);
+      const geometry = new THREE.BufferGeometry();
+      // 将 AlphaShape 的结果转换为 Three.js 中的 Vector3 对象
+      for (let i = 0; i < triangles.length; i++) {
+        const t = triangles[i];
+        geometry.vertices.push(
+          new THREE.Vector3(points[t[0]][0], points[t[0]][1], points[t[0]][2]),
+          new THREE.Vector3(points[t[1]][0], points[t[1]][1], points[t[1]][2]),
+          new THREE.Vector3(points[t[2]][0], points[t[2]][1], points[t[2]][2]),
+        );
+
+        // 创建三角形面并向 Geometry 添加
+        const faceIdx = i * 3;
+        geometry.faces.push(new THREE.Face3(faceIdx, faceIdx + 1, faceIdx + 2));
+      }
+
+      // 根据 Geometry 对象创建 Mesh 对象，然后添加到场景中
+      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+      new THREE.Mesh(geometry, material);
     },
     colorToRgb(sColor) {
       sColor = sColor.toLowerCase();

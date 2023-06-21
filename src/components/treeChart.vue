@@ -4,7 +4,7 @@
  * @Author: yichuanhao
  * @Date: 2023-04-23 11:49:25
  * @LastEditors: yichuanhao 1274816963@qq.com
- * @LastEditTime: 2023-05-04 22:06:26
+ * @LastEditTime: 2023-06-17 09:10:17
 -->
 <template>
   <div class="treeCharts">
@@ -209,35 +209,43 @@ export default {
     levelListHandel() {
       let index = 1;
       this.firstLevelList.forEach((item) => {
+        // item 表示一级， 取出对应的name
         index += 1;
         item.index = index;
         item.name = item.color;
         item.leaves = 1;
         item.children = [];
+        item.itemStyle = {
+          color: colord({ l: item.l, a: item.a, b: item.b }).toHex(),
+        };
+        item.label = {
+          color: colord({ l: item.l, a: item.a, b: item.b }).toHex(),
+        };
         this.secondLevelList.forEach((e) => {
+          // val 表示二级
           let val = { ...e };
           val.name = val.color;
+          e.itemStyle = {
+            color: colord({ l: e.l, a: e.a, b: e.b }).toHex(),
+          };
+          e.label = {
+            color: colord({ l: e.l, a: e.a, b: e.b }).toHex(),
+          };
           if (val.parent == item.color) {
             index += 1;
             val.index = index;
             val.leaves = 2;
             item.children.push(val);
-            val.children = [];
-            this.thirdLevelList.forEach((p) => {
-              let o = { ...p };
+            val.children = this.thirdLevelList.filter((o) => {
               o.name = o.color;
-              if (o.parent == val.color) {
-                index += 1;
-                o.index = index;
-                o.leaves = 3;
-                o.itemStyle = {
-                  color: colord({ l: o.l, a: o.a, b: o.b }).toHex(),
-                };
-                o.label = {
-                  color: colord({ l: o.l, a: o.a, b: o.b }).toHex(),
-                };
-                val.children.push(o);
-              }
+              o.leaves = 3;
+              o.itemStyle = {
+                color: colord({ l: o.l, a: o.a, b: o.b }).toHex(),
+              };
+              o.label = {
+                color: colord({ l: o.l, a: o.a, b: o.b }).toHex(),
+              };
+              return o.parent === item.color && o.subparent === val.color;
             });
           }
         });
