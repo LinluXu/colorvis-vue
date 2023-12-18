@@ -57,17 +57,17 @@
       <p>
         ·计算方法：trimesh选取最外围顶点绘制几何体，优点是可以最大范围涵盖点，但易受离散值影响；推荐三级展示使用。alphashape绘制的几何体考虑了离散值，但对于某些点分布不均、数量较少的色名影响较大；推荐二级展示使用。<br />
         <br />
-        ·搜索颜色：输入Lab值进行查找，画面中将展示输入值的点，并自动展示与输入值接近的色名，可以在“近似色名查看”框内选择或清除颜色。<br />
+        ·搜索颜色：输入的CIELab值查询最接近的传统色名，在“近似色名查看”框内选择或清除颜色。<br />
         <br />
-        ·一级色名：以点来展示五大色调倾向 <br />
+        ·五原色：为万事万物本源之色，无法通过其他颜色混合得出，是中国历史上最早揭示的色彩科学的基本规律 <br />
         <br />
-        ·二级色名：展示了正色“青｜赤｜黄｜白｜黑”与间色“绿｜碧｜红｜紫｜流黄”的色域范围。<br />
+        ·正色与间色：象征着古代地位等级。五正色“青、赤、黄、白、黑”是古代尊贵地位的象征；五间色“绿、碧、红、紫、流黄”，地位相对较低。<br />
         <br />
-        ·三级色名：展示了可以确定色域的色名 <br />
+        ·通用色名：通过正色与间色相生相克调和而成的万物的色彩。此处只展示部分明确色域范围的色名。 <br />
         <br />
-        ·近似色名查看：可在此搜索展示三级的所有色名（包括无法形成几何体的色名，以点展示）<br />
+        ·近似色名查看：可在此搜索展示所有通用色名，未形成色域范围的将以点的形式展示。<br />
         <br />
-        ·线框展示：开启后可以线框形式展示，便于比较。
+        ·线框展示：开启后可以线框形式展示色域的边界点，便于比较。
       </p>
     </commonDialog>
     <el-drawer :visible.sync="drawer" direction="rtl" custom-class="threeD" :modal="false">
@@ -76,16 +76,16 @@
       <!-- 模式 -->
       <span style="display: inline-block; width: 220px; color: #000; font-size: 14px; margin: 10px auto 0px; text-align: left">计算方法：</span>
       <el-select v-model="functionType" placeholder="请选择一级色名类别" size="small" @change="functionTypeChange">
-        <el-option label="Trimesh方法" :value="1">Trimesh方法</el-option>
-        <el-option label="Alpha Shape方法" :value="2">Alpha Shape方法</el-option>
+        <el-option label="Trimesh方法" :value="1">Trimesh</el-option>
+        <el-option label="Alpha Shape方法" :value="2">Alpha Shape</el-option>
       </el-select>
       <span style="display: inline-block; width: 220px; color: #000; font-size: 14px; margin: 10px auto 0px; text-align: left">搜索颜色：</span>
       <el-input clearable v-model="colorValue" placeholder="请输入想查找的CIELab颜色值" size="small" @change="changeColor"> </el-input>
       <!-- 一级颜色 -->
-      <span style="display: inline-block; width: 220px; color: #000; font-size: 14px; margin: 10px auto 0px; text-align: left">一级色名类别：</span>
+      <span style="display: inline-block; width: 220px; color: #000; font-size: 14px; margin: 10px auto 0px; text-align: left">五原色：</span>
       <el-select
         v-model="firstColorValue"
-        placeholder="请选择一级色名类别"
+        placeholder="请选择五原色"
         size="small"
         multiple
         collapse-tags
@@ -96,10 +96,10 @@
         <el-option v-for="(item, index) in firstLevelList" :key="index" :label="item" :value="item"> </el-option>
       </el-select>
       <!-- 二级颜色 -->
-      <span style="display: inline-block; width: 220px; color: #000; font-size: 14px; margin: 10px auto 0px; text-align: left">二级色名类别：</span>
+      <span style="display: inline-block; width: 220px; color: #000; font-size: 14px; margin: 10px auto 0px; text-align: left">正间色：</span>
       <el-select
         v-model="secondColorValue"
-        placeholder="请选择二级色名类别"
+        placeholder="请选择正色或间色"
         size="small"
         multiple
         collapse-tags
@@ -110,10 +110,10 @@
         <el-option v-for="(item, index) in secondLevelList" :key="index" :label="item" :value="item"> </el-option>
       </el-select>
       <!-- 三级颜色 -->
-      <span style="display: inline-block; width: 220px; color: #000; font-size: 14px; margin: 10px auto 0px; text-align: left">三级色名类别：</span>
+      <span style="display: inline-block; width: 220px; color: #000; font-size: 14px; margin: 10px auto 0px; text-align: left">通用色名：</span>
       <el-select
         v-model="thirdColorValue"
-        placeholder="请选择或输入三级色名"
+        placeholder="请选择或输入通用色名"
         size="small"
         multiple
         filterable
@@ -588,7 +588,7 @@ export default {
         if (flag) return;
         this.$message({
           showClose: true,
-          message: '请使用英文输入法输入正确Lab颜色格式,格式为 0,0,0',
+          message: '请使用英文输入法输入正确CIELab颜色格式,格式为 0,0,0',
           type: 'error',
         });
       }
